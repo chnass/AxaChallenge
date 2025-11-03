@@ -1,0 +1,277 @@
+% AXA data science challenge
+% Brainstorm solutions
+
+\documentclass[12pt, english, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}  
+
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\pagestyle{fancy}
+\lhead{}
+\lfoot{\today\ \currenttime}
+\cfoot{\thepage}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+\usepackage{bbding}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{todonotes}
+
+
+\begin{document}
+
+\title{AXA data science challenge}
+\author{Christian Nass}
+\maketitle
+
+\section{Aufgabenstellung}
+Der Fahrradverleih \href{https://citibikenyc.com/how-it-works/bike-rental-nyc}{CitiBike} vermietet in New York über 12.000 Fahrräder an 750 Verleihstationen. 
+Somit ist CitiBike eine echte Alternative zu den herkömmlichen Transportmitteln, wie z.B. U-Bahn oder 
+Taxi. CitiBike stellt die durch den Verleih gesammelten \href{https://s3.amazonaws.com/tripdata/index.html}{Daten} der Öffentlichkeit zur Verfügung  
+(s. bspw. „2023-citibike-tripdata.zip“).  
+\newline
+
+Deine Aufgabe als Data Scientist ist es, CitiBike dabei zu helfen diese Daten wertstiftend zu nutzen, 
+beispielsweise indem du für CitiBike Kooperationsmöglichkeiten mit einer Versicherung (und/oder 
+umgekehrt) skizzierst. Dazu kannst du zusätzlich die öffentlich zugängigen \href{https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95/about_data}{Daten} des NYPD zu 
+Verkehrsunfällen nutzen. 
+\newline
+
+Versioniere die Ergebnisse deiner Analyse bitte mit Git (bspw. auf Github). Stelle uns deine Unterlagen 
+und deinen Code bitte spätestens am Abend vor unserem gemeinsamen Termin via E-Mail zur 
+Verfügung. 
+\newline
+
+Viel Erfolg! 
+
+\newpage
+
+\section{Inspect data}
+
+Notebook: \underline{Inspect-Data.ipynb}
+
+\subsection{CitiBike data}
+\begin{itemize}
+    \item Period of time: June 2013 till September 2025
+    \item Columns:\\
+          Content self-explanatory based on name\\
+          Names vary over the years\\
+        \begin{tabular}{l | c | c}
+            \toprule
+            Column name & 2013 -- 2019 & 2020 -- 2025\\
+            \midrule
+            tripduration            & \Checkmark & \\
+            starttime               & \Checkmark & \Checkmark \\
+            stoptime                & \Checkmark & \Checkmark \\
+            start station id        & \Checkmark & \Checkmark \\
+            start station name      & \Checkmark & \Checkmark \\
+            start station latitude  & \Checkmark & \Checkmark \\
+            start station longitude & \Checkmark & \Checkmark \\
+            end station id          & \Checkmark & \Checkmark \\
+            end station name        & \Checkmark & \Checkmark \\
+            end station latitude    & \Checkmark & \Checkmark \\
+            end station longitude   & \Checkmark & \Checkmark \\
+            bikeid                  & \Checkmark & \\
+            usertype                & \Checkmark & \Checkmark \\
+            birth year              & \Checkmark & \\
+            gender                  & \Checkmark & \\
+            ride\_id                 & & \Checkmark \\
+            rideable\_type          & & \Checkmark \\
+            \bottomrule
+        \end{tabular}
+    \item Problem: Running out of storage saving all the data on my laptop
+    \begin{itemize}
+        \item Notebook: \underline{Prepare-CitiBike-Data.ipynb}
+        \item Slimmed files by removing duplicated information
+        \item Storing station name, latitude and longitude only once in a separate file together with their id
+        \item Keep only start and end id in tripdata files
+    \end{itemize}
+\end{itemize}
+
+
+
+\subsection{NYPD Motor Vehicle Collisions - Crashes data}
+\begin{itemize}
+    \item Period of time: August 2012 till 26th October 2025.\\
+        Most reportings from 2016 onwards (new system enroled in 2016).
+    \item Columns:\\
+        \begin{tabular}{l | l }
+            \toprule
+            Column name & Description\\
+            \midrule
+            CRASH DATE & Occurrence date of collision\\
+            CRASH TIME & Occurrence time of collision\\ 
+            BOROUGH & Borough where collision occurred\\ 
+            ZIP CODE & Postal code of incident occurrence\\ 
+            LATITUDE & Latitude coordinate (EPSG 4326)\\ 
+            LONGITUDE & Longitude coordinate (EPSG 4326)\\
+            LOCATION & Latitude, Longitude pair\\ 
+            ON STREET NAME & Street on which the collision occurred\\ 
+            CROSS STREET NAME & Nearest cross street to the collision\\
+            OFF STREET NAME & Street address if known\\ 
+            NUMBER OF PERSONS INJURED & Number of persons injured\\ 
+            NUMBER OF PERSONS KILLED & Number of persons killed\\ 
+            NUMBER OF PEDESTRIANS INJURED & Number of pedestrians injured\\ 
+            NUMBER OF PEDESTRIANS KILLED & Number of pedestrians killed\\ 
+            NUMBER OF CYCLIST INJURED & Number of cyclists injured\\ 
+            NUMBER OF CYCLIST KILLED & Number of cyclists killed\\ 
+            NUMBER OF MOTORIST INJURED & Number of vehicle occupants injured\\ 
+            NUMBER OF MOTORIST KILLED & Number of vehicle occupants killed\\
+            VEHICLE TYPE CODE & Type of vehicle based on the selected\\
+            & vehicle category: e.g. ATV, bicycle, car, \\
+            & escooter, motorcycle (Up to 5)\\   
+            CONTRIBUTING FACTOR VEHICLE & Factors contributing to the collision\\
+            & for designated vehicle (Up to 5)\\ 
+            COLLISION\_ID & Unique record code generated by system\\ 
+            \bottomrule
+        \end{tabular}
+    \item 2.2 million collisions recorded
+    \item In about 3\% of the collisions a bicycle is involved (67147)\\
+        Most of them with a regular (non-electric) bike (83\%)
+\end{itemize}
+
+\newpage
+
+
+\section{Value-adding opportunities of the data}
+
+The focus is set on cooperation of CitiBike with an insurance company. 
+Besides that the data can for sure be used to optimise operations at CitiBike.
+The data can also be used to evaluate the infrastructure e.g. by analysing the average time to commute between stations and the number of bike crashes. 
+
+
+\subsection{Cooperation with an insurance company}
+
+\begin{itemize}
+    \item CitiBike company
+    \begin{itemize}
+        \item Liabilities for inadequate maintenance or defective equipment\\
+            ---> Business liability insurance, business legal protection insurance
+        \item Theft and vandalism
+    \end{itemize}
+    \item CitiBike customers
+    \begin{itemize}
+        \item Bike accident insurance
+        \item Bike liability insurance
+        \item Traffic legal protection insurance
+    \end{itemize}
+\end{itemize}
+
+It is not possible to provide recommendations for specific insurance plans or their prices based on the available data.
+Nor is it possible to calculate precise risk levels for CitiBike users, since the crash dataset does not indicate whether the bikes involved were rented or privately owned.
+However, it can be reasonably assumed that riding a CitiBike involves certain risks, and obtaining insurance coverage against them may be advisable.
+
+
+
+
+\subsection{CitiBike operation}
+
+Main goal is to improve the operations / service.
+\newline
+\begin{tabular}{l | l}
+\toprule
+CitiBike duties & Data opportunities\\
+\midrule
+Define tariffs; Pricing & Not enough information\\
+\hline
+Order bikes & \multirow{4}{*}{\makecell{Predict future bike usage\\in general and for each station}}\\
+Hire staff & \\
+Redistribute bikes & \\
+Open/close stations & \\
+\hline
+\multirow{2}{*}{Service of bikes} & Identify bikes with low usage\\
+                                  & And bikes with short usage and the same start/end station\\
+\hline
+Sell ads on bike screens & Acquire customers with shops at frequently visited stations\\
+\bottomrule
+\end{tabular}
+\newline
+% \begin{itemize}
+%     \item Predict future usage capacity utilisation (in general and for each station)\\
+%         ---> Order bikes, Hire new staff, etc.\\
+%         ---> Redistribute bikes efficiently \\
+%         ---> Open/close stations
+%     \item Identify bikes that are not used a lot (even though the station is frequently used), or often have a short usage with the same start and end station
+%         ---> Bike might be broken and service is needed
+%     \item If you know the position of all bikes at one point it is possible to simulate the number of bikes at each station\\
+%         ---> Identify stations at which there are often no bikes available. If the net flow (bikes entering, leaving) is zero, not as easy to identify
+%     \item Identify routes that are often used
+%         ---> Acquire customers to place ads on the bike screens
+% \end{itemize}
+
+If the positions of all bikes are known at a given time, it becomes possible to simulate the number of bikes at each station.
+This allows for the identification of stations that frequently have no bikes available.
+However, this is difficult to achieve with the data currently available.
+
+
+
+
+\newpage
+
+\section{Data analysis}
+
+This section presents the data analysis with respect to the goals listed in the previous section. 
+
+\subsection{Cooperation with an insurance company}
+
+Notebook: \underline{Analyse-crashes.ipynb}\\
+Analyse risks for bike riders to be involved in a crash and their causes. 
+There is a significant risk of being involved in a crash as a bike driver. 
+This is also true for experienced drivers due to inattention etc. of other road users. 
+For this reason every driver should have an insurance. 
+CitiBike could over in cooperation with an insurance company a special bike insurance, combining the insurances discussed above. 
+Similarly, casual members may be asked before every drive to get the same insurance just for that drive. 
+\newline
+Main takeaway points regarding risks are listed below:
+\begin{itemize}
+    \item Number of crashes with a bike increase over the years
+    \item Many people use the bikes to commute to work and the most crashes are reported around 5pm, when most people drive back home
+    \item Crashes mainly in Manhattan at large roads (lots of traffic) --> Most CitiBike rides start there too
+    \item Bikes very vulnerable and take severe injuries in crashes where a bike is involved
+    \item In 1 out of 200 reported bike crashes the cyclist died
+    \item Crashes are caused more than twice as often from other road users than from bikers
+    \item There are many different causes for the crashes\\
+    ---> Among the most common are driver inattention / distraction, failure to yield Right-of-Way and traffic control disregarded (this is the same for bikers and cars)
+    \item For fatal crashes, additional factors such as alcohol involvement, unsafe speed, and poor road conditions appear more often
+    \item For new e-bike the risk of a crash is raised due to inexperience
+\end{itemize}
+
+Statements about theft and vanalism cannot be made based on the available data. 
+Crashes due to inadequate maintenance or defective equipment seem to be low. 
+If liabilities do exist, they could be costly (especially in America :D), so it might still be worth CitiBike protecting itself against them.
+
+
+\subsection{CitiBike operation}
+
+
+
+
+
+
+
+
+
+
+\newpage
+
+\section{Miscellaneous}
+
+\begin{itemize}
+    \item Diffusion map of bikes at different timestamps\\
+        Presumably arrows are pointing towards Manhattan in the morning and outwards in the evening
+    \item Ride insurance price dependent on time, customer history, etc. (ride duration not known at start)
+    \item Many accidents probably not recorded
+    \begin{itemize}
+        \item Presumably relative low damage/harm but insurance still helpful
+        \item Accidents without other people involved are not recorded
+    \end{itemize}
+\end{itemize}
+
+\end{document}

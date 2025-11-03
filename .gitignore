@@ -1,0 +1,13 @@
+.DS_Store
+.vscode
+# Notebook checkpoints
+.ipynb_checkpoints
+# Daten
+data*
+# Latex helper files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.gz
